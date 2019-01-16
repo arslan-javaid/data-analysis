@@ -1,0 +1,6 @@
+Django==2.1
+gunicorn==19.9.0
+pytz==2018.5
+scrapy
+scrapyd 
+python-scrapyd-api
