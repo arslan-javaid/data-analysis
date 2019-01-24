@@ -17,7 +17,7 @@ import django
 
 sys.path.append(os.path.dirname(os.path.abspath('.')))
 # Do not forget the change iCrawler part based on your project name
-os.environ['DJANGO_SETTINGS_MODULE'] = 'iCrawler.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'research.settings'
 
 # This is required only if Django Version > 1.8
 django.setup()
@@ -34,7 +34,7 @@ NEWSPIDER_MODULE = 'scrapy_app.spiders'
 #USER_AGENT = 'scrapy_app (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
