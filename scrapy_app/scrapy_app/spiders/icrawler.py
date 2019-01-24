@@ -7,6 +7,20 @@ from scrapy.spiders import CrawlSpider, Rule
 class IcrawlerSpider(CrawlSpider):
     name = 'main'
 
+    list_rules = {
+        'css': {
+            'citation-text': '.gs_fl > a:nth-child(3)::text',
+            'citation-url': '.gs_fl > a:nth-child(3)::attr(href)',
+            'journal-year-src': '.gs_a::text',
+        },
+        'xpath': {
+            'url': '//h3[@class="gs_rt"]/a/@href',
+            'title': '//h3[@class="gs_rt"]/a',
+            'authors': '//div[@class="gs_a"]/a',
+            'description': '//div[@class="gs_rs"]',
+        }
+    }
+
     def __init__(self, *args, **kwargs):
         # We are going to pass these args from our django view.
         # To make everything dynamic, we need to override them inside __init__ method
@@ -16,7 +30,6 @@ class IcrawlerSpider(CrawlSpider):
         # self.allowed_domains = [self.domain]
 
         start_url = "https://scholar.google.com.pk/scholar?hl=en&as_sdt=0%2C5&q=erp+implementation&oq=ERP"
-
 
         self.domain = ["google.com"]
         self.allowed_domains = ["google.com"]
@@ -29,20 +42,46 @@ class IcrawlerSpider(CrawlSpider):
         super(IcrawlerSpider, self).__init__(*args, **kwargs)
 
     def parse(self, response):
-        # You can tweak each crawled page here
-        # Don't forget to return an object.
+
         obj = {}
-        obj['url'] = response.url
+
+        # URL
+        obj['url'] = response.xpath(self.list_rules['xpath']['url']).extract()
 
         # Title
-        titleList = []
-        titles = response.xpath('//h3[@class="gs_rt"]/a')
+        title_list = []
+        titles = response.xpath(self.list_rules['xpath']['title'])
         for item in titles:
             title = item.xpath('.//text()').extract()
-            h3 = "".join(title)
-            titleList.append(h3)
+            text = "".join(title)
+            title_list.append(text)
+        obj['title'] = title_list
 
-        obj['title'] = titleList
+        # citation-text
+        obj['citation'] = response.css(self.list_rules['css']['citation-text']).extract()
 
-        # yield {obj}
+        # citation-url
+        obj['citation-url'] = response.css(self.list_rules['css']['citation-url']).extract()
+
+        # authors
+        author_list = []
+        authors = response.xpath(self.list_rules['xpath']['authors'])
+        for item in authors:
+            title = item.xpath('.//text()').extract()
+            text = "".join(title)
+            author_list.append(text)
+        obj['authors'] = author_list
+
+        # description
+        description_list = []
+        description_text = response.xpath(self.list_rules['xpath']['description'])
+        for item in description_text:
+            title = item.xpath('.//text()').extract()
+            text = "".join(title)
+            description_list.append(text)
+        obj['description'] = description_list
+
+        # journal-year-src
+        obj['journal-year-src'] = response.css(self.list_rules['css']['journal-year-src']).extract()
+
         return obj

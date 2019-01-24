@@ -28,6 +28,5 @@ class ScrapyAppPipeline(object):
         item.save()
 
     def process_item(self, item, spider):
-        self.items.append(item['url'])
-        self.items.append(item['title'])
+        self.items = item
         return item
