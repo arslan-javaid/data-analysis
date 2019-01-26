@@ -1,14 +1,18 @@
 {% extends 'authenticate/base.html' %}
 
 {% block content %}
-    <h2>Search
-        {% if user.is_authenticated and user.is_superuser %}
-            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#rackModal">Add</button>
-        {% endif %}
-    </h2>
+    <h2>Search</h2>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="custom-range">Custom range:</span>
+  </div>
+  <input type="text" id="as_ylo" name="as_ylo" class="form-control" placeholder="Enter Year" >
+  <input type="text" id="as_yhi" name="as_yhi" class="form-control" placeholder="Enter Year" >
+</div>
 
 <div class="input-group">
-	<input type="text" class="form-control" placeholder="Search">
+	<input id="search-query" type="text" class="form-control" placeholder="Search">
       <span class="input-group-btn">
         <button class="btn btn-search" type="button"><i class="fa fa-search fa-fw"></i> Search</button>
       </span>
@@ -113,7 +117,111 @@
         });
 
         // Table
-        $('#tbl-google-scholar').DataTable();
+        // $('#tbl-google-scholar').DataTable();
+
+        // init
+        oSearch = new Search();
+
+    };
+
+    function Search(){
+
+        this.status = '';
+        this.task_id = '1e989d7a215211e9bdee88e9fe5dba4a';
+        this.unique_id = 'fb31b3e7-dc69-4e7c-897a-c7fe9a02f31d';
+
+        // this.get();
+
+        let self = this;
+
+        // Events
+        $('.btn-search').on('click', function () {
+            self.crawl();
+        });
+    }
+
+    Search.prototype.get = function () {
+
+        $("#tbl-google-scholar").dataTable().fnDestroy();
+
+        $('#tbl-google-scholar').DataTable( {
+            "processing": true,
+            "serverSide": false,
+            "ajax": {
+                "url": "/api/crawl/",
+                "type": "GET",
+                "data": {
+                    "unique_id": this.unique_id,
+                    "task_id": this.task_id
+                },
+            },
+            "columns": [
+                { "data": "author" },
+                { "data": "title" },
+                { "data": "citation" },
+                { "data": null }
+            ],
+
+            "aoColumns": [{
+                  "sWidth": "30%",
+                  "mData": 'author'
+                }, {
+                  "sWidth": "60%",
+                  "mData": 'title'
+                }, {
+                  "sWidth": "10%",
+                  "mData": 'citation'
+                }, {
+                "sWidth": "5%",
+                  "mData": null,
+                  "bSortable": false,
+                  "mRender": function(data, type, full) {
+                    return '<a class="btn btn-info btn-sm" href=' + data['url'] + '>' + 'View' + '</a>';
+                  }
+                }]
+            // columnDefs: [
+            //     {
+            //         width: '10%'
+            //     },
+            //     {
+            //       width: '40%'
+            //     },
+            //     {
+            //       width: '10%'
+            //     },
+            //     {
+            //         targets: -1,
+            //         data: null,
+            //         defaultContent: '<a href="https://www.emeraldinsight.com/doi/abs/10.1108/14637150710752272" target="_blank">View</a>'
+            //     }
+            // ]
+        });
+
+    };
+
+    Search.prototype.crawl = function () {
+        let self = this;
+        $.ajax({
+            type: "POST",
+            url: "/api/crawl/",
+            data: {
+                "search-query": $("#search-query").val(),
+                "as_ylo": $("#as_ylo").val(),
+                "as_yhi": $("#as_yhi").val(),
+            },
+            success: function(data){
+                self.unique_id = data.unique_id;
+                self.task_id = data.task_id;
+
+                // self.get();
+                console.log("success");
+                console.log(data);
+            },
+            failure: function(data){
+                console.log("failure");
+                console.log(data);
+            },
+        });
     };
 </script>
 {% endblock %}

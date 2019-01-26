@@ -45,10 +45,21 @@ def crawl(request):
     # Post requests are for new crawling tasks
     if request.method == 'POST':
 
-        url = request.POST.get('url', None)  # take url comes from client. (From an input may be?)
+        search_query = request.POST.get('search-query', None)
+        as_ylo = request.POST.get('as_ylo', None)
+        as_yhi = request.POST.get('as_yhi', None)
 
-        if not url:
+        if not search_query:
             return JsonResponse({'error': 'Missing  args'})
+
+        search_query = search_query.replace(" ", "+")
+        url = 'https://scholar.google.com.pk/scholar?hl=en&as_sdt=0%2C5&q='+search_query
+
+        if as_ylo:
+            url += 'as_ylo=' + as_ylo
+
+        if as_yhi:
+            url += 'as_ylo=' + as_yhi
 
         if not is_valid_url(url):
             return JsonResponse({'error': 'URL is invalid'})
@@ -56,19 +67,16 @@ def crawl(request):
         domain = urlparse(url).netloc  # parse the url and extract the domain
         unique_id = str(uuid4())  # create a unique ID.
 
-        # This is the custom settings for scrapy spider.
-        # We can send anything we want to use it inside spiders and pipelines.
-        # I mean, anything
+        # Custom settings for scrapy spider.
         settings = {
             'unique_id': unique_id,  # unique ID for each record for DB
+            'search_query': search_query,
+            'as_ylo': as_ylo,
+            'as_yhi': as_yhi,
             'USER_AGENT': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
         }
 
-        # Here we schedule a new crawling task from scrapyd.
-        # Notice that settings is a special argument name.
-        # But we can pass other arguments, though.
-        # This returns a ID which belongs and will be belong to this task
-        # We are goint to use that to check task's status.
+        # Schedule a new crawling task from scrapyd.
         task = scrapyd.schedule('default', 'main',
                                 settings=settings, url=url, domain=domain)
 
@@ -76,20 +84,12 @@ def crawl(request):
 
     # Get requests are for getting result of a specific crawling task
     elif request.method == 'GET':
-        # We were passed these from past request above. Remember ?
-        # They were trying to survive in client side.
-        # Now they are here again, thankfully. <3
-        # We passed them back to here to check the status of crawling
-        # And if crawling is completed, we respond back with a crawled data.
         task_id = request.GET.get('task_id', None)
         unique_id = request.GET.get('unique_id', None)
 
         if not task_id or not unique_id:
             return JsonResponse({'error': 'Missing args'})
 
-        # Here we check status of crawling that just started a few seconds ago.
-        # If it is finished, we can query from database and get results
-        # If it is not finished we can return active status
         # Possible results are -> pending, running, finished
         status = scrapyd.job_status('default', task_id)
         if status == 'finished':

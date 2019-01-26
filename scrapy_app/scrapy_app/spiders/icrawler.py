@@ -24,17 +24,12 @@ class IcrawlerSpider(CrawlSpider):
     def __init__(self, *args, **kwargs):
         # We are going to pass these args from our django view.
         # To make everything dynamic, we need to override them inside __init__ method
-        # self.url = kwargs.get('url')
-        # self.domain = kwargs.get('domain')
-        # self.start_urls = [self.url]
-        # self.allowed_domains = [self.domain]
-
-        start_url = "https://scholar.google.com.pk/scholar?hl=en&as_sdt=0%2C5&q=erp+implementation&oq=ERP"
+        self.url = kwargs.get('url')
+        # self.url = "https://scholar.google.com.pk/scholar?hl=en&as_sdt=0%2C5&q=erp+implementation&oq=ERP"
+        self.start_urls = [self.url]
 
         self.domain = ["google.com"]
         self.allowed_domains = ["google.com"]
-        self.url = [start_url]
-        self.start_urls = [start_url]
 
         IcrawlerSpider.rules = [
             Rule(LinkExtractor(allow=("scholar\?.*")), callback='parse', follow=False),
@@ -70,7 +65,7 @@ class IcrawlerSpider(CrawlSpider):
             title = item.xpath('.//text()').extract()
             text = "".join(title)
             author_list.append(text)
-        obj['authors'] = author_list
+        obj['author'] = author_list
 
         # description
         description_list = []
