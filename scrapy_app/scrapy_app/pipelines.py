@@ -29,10 +29,17 @@ class ScrapyAppPipeline(object):
 
     def process_item(self, item, spider):
         titles = item['title']
-        for key, value in item.items():
+
+        for i in range(len(titles)):
             paper = {}
-            for i in range(len(titles)):
-                paper[key] = item[key][i]
+            paper['url'] = item['url'][i]
+            paper['title'] = item['title'][i]
+            paper['citation'] = item['citation'][i]
+            paper['citation-url'] = item['citation-url'][i]
+            paper['author'] = item['author'][i]
+            paper['description'] = item['description'][i]
+            paper['journal-year-src'] = item['journal-year-src'][i]
+
             self.items.append(paper)
 
         return self.items

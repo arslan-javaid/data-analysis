@@ -18,79 +18,49 @@
       </span>
 </div>
 
-<table id="tbl-google-scholar" class="table table-striped table-bordered" style="width:100%">
+<div id="processing" style="display: none">
+	<div>
+        <div class="spinner-grow text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-secondary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-success" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-danger" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-warning" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-info" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-dark" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div id="div-google-scholar">
+    <table id="tbl-google-scholar" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
                 <th>Author Name</th>
                 <th>Title</th>
+                <th>Abstract</th>
                 <th>Cite</th>
                 <th>Impact Factor</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>P Bingi</th>
-                <td>Critical issues affecting an ERP implementation</td>
-                <td>Cite</td>
-                <td><a href="https://www.tandfonline.com/doi/pdf/10.1201/1078/43197.16.3.19990601/31310.2" target="_blank">View</a></td>
-            </tr>
-
-            <tr>
-                <th>CP Holland</th>
-                <td>A critical success factors model for ERP implementation</td>
-                <td>Cited by 1897</td>
-                <td><a href="https://www.computer.org/csdl/mags/so/1999/03/s3030.pdf" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>B Light</th>
-                <td>The critical success factors for ERP implementation: an organizational fit perspective</td>
-                <td>Cited by 1479</td>
-                <td><a href="https://www.sciencedirect.com/science/article/pii/S0378720601001343" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>AM Aladwani</th>
-                <td>Change management strategies for successful ERP implementation</td>
-                <td>Cited by 1581</td>
-                <td><a href="https://www.emeraldinsight.com/doi/abs/10.1108/14637150110392764" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>K Amoako-Gyampah</th>
-                <td>An extension of the technology acceptance model in an ERP implementation environment</td>
-                <td>Cited by 860</td>
-                <td><a href="https://www.sciencedirect.com/science/article/pii/S0378720603001228" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>IC Ehie</th>
-                <td>ERP implementation: a compilation and analysis of critical success factors</td>
-                <td>Cited by 1035</td>
-                <td><a href="https://www.emeraldinsight.com/doi/abs/10.1108/14637150710752272" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>Z Huang</th>
-                <td>Identifying critical issues in enterprise resource planning (ERP) implementation</td>
-                <td>Cited by 705</td>
-                <td><a href="" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>P Palvia</th>
-                <td>ERP implementation issues in advanced and developing countries</td>
-                <td>Cited by 552</td>
-                <td><a href="https://www.sciencedirect.com/science/article/pii/S0166361505000709" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>FFH Nah</th>
-                <td>ERP implementation: chief information officers' perceptions of critical success factors</td>
-                <td>Cited by 444</td>
-                <td><a href="https://www.emeraldinsight.com/doi/pdf/10.1108/14637150110392773" target="_blank">View</a></td>
-            </tr>
-            <tr>
-                <th>KM Zuckweiler</th>
-                <td>Vicious and virtuous cycles in ERP implementation: a case study of interrelations between critical success factors</td>
-                <td>Cited by 589</td>
-                <td><a href="https://www.tandfonline.com/doi/abs/10.1207/S15327590IJHC1601_2" target="_blank">View</a></td>
-            </tr>
         </tbody>
     </table>
+</div>
+
+
 
     {% if form.errors %}
         <div class="alert alert-danger alter-dismissable" role="alert">
@@ -127,23 +97,29 @@
     function Search(){
 
         this.status = '';
-        this.task_id = '1e989d7a215211e9bdee88e9fe5dba4a';
-        this.unique_id = 'fb31b3e7-dc69-4e7c-897a-c7fe9a02f31d';
+        this.task_id = 'c2d106de226011e9878d88e9fe5dba4a';
+        this.unique_id = 'ec0c3eeb-c6d0-4473-a981-0a72e9744f06';
 
-        // this.get();
+        this.get();
 
         let self = this;
 
         // Events
         $('.btn-search').on('click', function () {
+            $('#div-google-scholar').hide();
+            $('#processing').show();
             self.crawl();
         });
     }
 
     Search.prototype.get = function () {
 
-        $("#tbl-google-scholar").dataTable().fnDestroy();
+        $('#div-google-scholar').show();
+        $('#processing').hide();
 
+        // Rest table
+        $("#tbl-google-scholar").dataTable().fnDestroy();
+        // Display Table
         $('#tbl-google-scholar').DataTable( {
             "processing": true,
             "serverSide": false,
@@ -155,19 +131,19 @@
                     "task_id": this.task_id
                 },
             },
-            "columns": [
-                { "data": "author" },
-                { "data": "title" },
-                { "data": "citation" },
-                { "data": null }
-            ],
 
             "aoColumns": [{
-                  "sWidth": "30%",
-                  "mData": 'author'
+                  "sWidth": "15%",
+                  "mData": null,
+                  "mRender": function(data, type, full) {
+                    return '<b>' + data['author'] + '</b>';
+                  }
                 }, {
-                  "sWidth": "60%",
+                  "sWidth": "30%",
                   "mData": 'title'
+                }, {
+                  "sWidth": "50%",
+                  "mData": 'description'
                 }, {
                   "sWidth": "10%",
                   "mData": 'citation'
@@ -176,25 +152,9 @@
                   "mData": null,
                   "bSortable": false,
                   "mRender": function(data, type, full) {
-                    return '<a class="btn btn-info btn-sm" href=' + data['url'] + '>' + 'View' + '</a>';
+                    return '<a class="btn btn-info btn-sm" target="_blank" href=' + data['url'] + '>' + 'View' + '</a>';
                   }
                 }]
-            // columnDefs: [
-            //     {
-            //         width: '10%'
-            //     },
-            //     {
-            //       width: '40%'
-            //     },
-            //     {
-            //       width: '10%'
-            //     },
-            //     {
-            //         targets: -1,
-            //         data: null,
-            //         defaultContent: '<a href="https://www.emeraldinsight.com/doi/abs/10.1108/14637150710752272" target="_blank">View</a>'
-            //     }
-            // ]
         });
 
     };
@@ -213,9 +173,38 @@
                 self.unique_id = data.unique_id;
                 self.task_id = data.task_id;
 
-                // self.get();
+                // Check the status of scraping
+                self.crawlInterval = setInterval(function(){
+                     self.check(self.unique_id, self.task_id);
+                },500);
+
                 console.log("success");
                 console.log(data);
+            },
+            failure: function(data){
+                console.log("failure");
+                console.log(data);
+            },
+        });
+    };
+
+    Search.prototype.check = function (unique_id,task_id) {
+        let self = this;
+        $.ajax({
+            type: "GET",
+            url: "/api/crawl/",
+            data: {
+                "unique_id": unique_id,
+                "task_id": task_id
+            },
+            success: function(data){
+                // self.unique_id = data.unique_id;
+                // self.task_id = data.task_id;
+
+                if(data.status == 'finished'){
+                    clearInterval(self.crawlInterval);
+                    self.get();
+                }
             },
             failure: function(data){
                 console.log("failure");

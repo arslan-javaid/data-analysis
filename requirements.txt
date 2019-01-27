@@ -5,3 +5,5 @@ scrapy
 scrapyd 
 python-scrapyd-api
 scrapy-djangoitem
+pymysql
+mysqlclient
