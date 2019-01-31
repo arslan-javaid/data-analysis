@@ -73,7 +73,7 @@ def crawl(request):
             'search_query': search_query,
             'as_ylo': as_ylo,
             'as_yhi': as_yhi,
-            'USER_AGENT': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+            'USER_AGENT': 'Googlebot/2.1 (+http://www.googlebot.com/bot.html)'
         }
 
         # Schedule a new crawling task from scrapyd.
@@ -86,6 +86,14 @@ def crawl(request):
     elif request.method == 'GET':
         task_id = request.GET.get('task_id', None)
         unique_id = request.GET.get('unique_id', None)
+        action = request.GET.get('action', 'crawl')
+
+        if action == 'list':
+            try:
+                item = ScrapyItem.objects.get(unique_id=unique_id)
+                return JsonResponse({'status': 'finished', 'data': item.to_dict['data']})
+            except Exception as e:
+                return JsonResponse({'error': str(e)})
 
         if not task_id or not unique_id:
             return JsonResponse({'error': 'Missing args'})
