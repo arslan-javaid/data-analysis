@@ -3,7 +3,7 @@
 ## How to get it up and running (locally)
 
 * Clone the repository using `git clone https://github.com/arslan-javaid/data-analysis.git` ;
-* Go to `pure-logics` and execute these lines:
+* Go to `data-analysis` and execute these lines:
 ```
 cd data-analysis
 
@@ -14,4 +14,10 @@ virtualenv env/
 source env/bin/activate
 
 pip install -r requirements.txt
+```
+
+#### Run Scrapy Server (locally)
+```
+cd scrapy_app
+scrapyd
 ```
