@@ -6,7 +6,7 @@ from .forms import SignUpForm
 
 
 class Home(TemplateView):
-    template_name = 'authenticate/home.html'
+    template_name = 'main/home.html'
 
     def get(self, request):
         return redirect(reverse('home', kwargs={}))
@@ -14,7 +14,7 @@ class Home(TemplateView):
 
 class Authentication(TemplateView):
     template_login = 'authenticate/login.html'
-    template_home = 'authenticate/home.html'
+    template_home = 'main/home.html'
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -38,7 +38,7 @@ class Authentication(TemplateView):
 
 
 class LogoutView(View):
-    template_name = 'authenticate/home.html'
+    template_name = 'authenticate/login.html'
 
     def get(self, request):
         logout(request)
@@ -48,7 +48,7 @@ class LogoutView(View):
 
 class RegisterView(TemplateView):
     template_register = 'authenticate/register.html'
-    template_home = 'authenticate/home.html'
+    template_home = 'main/home.html'
 
     def get(self, request):
         if request.user.is_authenticated:
