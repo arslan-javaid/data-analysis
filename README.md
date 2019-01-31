@@ -16,6 +16,15 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
+#### Project initialization
+```
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py createsuperuser
+python manage.py collectstatic
+```
+
 #### Run Scrapy Server (locally)
 ```
 cd scrapy_app
