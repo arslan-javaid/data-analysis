@@ -30,3 +30,14 @@ python manage.py collectstatic
 cd scrapy_app
 scrapyd
 ```
+
+#### Generate new Spider
+```
+scrapy genspider tandfonline www.tandfonline.com
+```
+
+#### Output Json/CSV
+```
+scrapy crawl tandfonline -o tandfonline.json
+scrapy crawl tandfonline -o tandfonline.csv
+```

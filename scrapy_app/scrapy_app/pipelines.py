@@ -28,18 +28,5 @@ class ScrapyAppPipeline(object):
         item.save()
 
     def process_item(self, item, spider):
-        titles = item['title']
-
-        for i in range(len(titles)):
-            paper = {}
-            paper['url'] = item['url'][i]
-            paper['title'] = item['title'][i]
-            paper['citation'] = item['citation'][i]
-            paper['citation-url'] = item['citation-url'][i]
-            paper['author'] = item['author'][i]
-            paper['description'] = item['description'][i]
-            paper['journal-year-src'] = item['journal-year-src'][i]
-
-            self.items.append(paper)
-
-        return self.items
+        self.items = item
+        return item

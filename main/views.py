@@ -73,7 +73,7 @@ def crawl(request):
             'search_query': search_query,
             'as_ylo': as_ylo,
             'as_yhi': as_yhi,
-            'USER_AGENT': 'Googlebot/2.1 (+http://www.googlebot.com/bot.html)'
+            'USER_AGENT': 'Mozilla/5.0 (X11; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0'
         }
 
         # Schedule a new crawling task from scrapyd.
